@@ -43,6 +43,9 @@ namespace py = pybind11;
 #include <cuda.h>
 #include <cuda_runtime.h>
 #define DEVICE_TYPE at::DeviceType::CUDA
+#elif defined(BACKEND_HCU)
+#include <hip/hip_runtime.h>
+#define DEVICE_TYPE at::DeviceType::CUDA
 #else  // CUDA
 #include <cuda.h>
 #include <cuda_runtime.h>

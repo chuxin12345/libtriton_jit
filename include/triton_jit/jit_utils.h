@@ -17,6 +17,8 @@
 #include <cn_api.h>
 #elif defined(BACKEND_GCU)
 #include "tops_runtime_api.h"
+#elif defined(BACKEND_HCU)
+#include <hip/hip_runtime.h>
 #else
 #include "cuda.h"
 #endif
@@ -177,6 +179,22 @@ inline void __checkGcuErrors(topsError_t code, const char* file, const int line)
     fprintf(stderr, "GCU Runtime API error = %04d (%s) from file <%s>, line %i.\n",
             static_cast<int>(code), topsGetErrorString(code), file, line);
     throw std::runtime_error("GCU Runtime API error");
+  }
+}
+#elif defined(BACKEND_HCU)
+#define checkHcuErrors(err) __checkHcuErrors(err, __FILE__, __LINE__)
+
+// Error handling function for HCU runtime API using exceptions
+inline void __checkHcuErrors(hipError_t code, const char* file, const int line) {
+  if (code != hipSuccess) {
+    const char* error_string = hipGetErrorString(code);
+    fprintf(stderr,
+            "HCU Runtime API error = %04d from file <%s>, line %i. Detail: <%s>\n",
+            static_cast<int>(code),
+            file,
+            line,
+            error_string);
+    throw std::runtime_error(error_string);
   }
 }
 #else

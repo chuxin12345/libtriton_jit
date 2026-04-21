@@ -213,7 +213,7 @@ def main():
     parser = argparse.ArgumentParser(description="Run Triton JIT operator tests")
     parser.add_argument(
         "--backend",
-        choices=["CUDA", "MUSA", "NPU", "IX", "MLU", "GCU"],
+        choices=["CUDA", "MUSA", "NPU", "IX", "MLU", "GCU", "HCU"],
         default="CUDA",
         help="Backend to test",
     )

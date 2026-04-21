@@ -146,3 +146,8 @@ template class triton_jit::TritonJITFunctionImpl<triton_jit::MluBackend>;
 #include "triton_jit/backends/gcu_backend.h"
 template class triton_jit::TritonJITFunctionImpl<triton_jit::GcuBackend>;
 #endif
+
+#ifdef BACKEND_HCU
+#include "triton_jit/backends/hcu_backend.h"
+template class triton_jit::TritonJITFunctionImpl<triton_jit::HcuBackend>;
+#endif
