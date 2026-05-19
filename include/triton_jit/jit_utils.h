@@ -15,6 +15,8 @@
 #include <musa.h>
 #elif defined(BACKEND_MLU)
 #include <cn_api.h>
+#elif defined(BACKEND_GCU)
+#include "tops_runtime_api.h"
 #else
 #include "cuda.h"
 #endif
@@ -163,6 +165,16 @@ inline void __checkMluErrors(CNresult code, const char* file, const int line) {
         line,
         error_string);
     throw std::runtime_error(error_string);
+  }
+}
+#elif defined(BACKEND_GCU)
+#define checkGcuErrors(err) __checkGcuErrors(err, __FILE__, __LINE__)
+
+inline void __checkGcuErrors(topsError_t code, const char* file, const int line) {
+  if (code != topsSuccess) {
+    fprintf(stderr, "GCU Runtime API error = %04d (%s) from file <%s>, line %i.\n",
+            static_cast<int>(code), topsGetErrorString(code), file, line);
+    throw std::runtime_error("GCU Runtime API error");
   }
 }
 #else

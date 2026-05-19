@@ -41,9 +41,17 @@ class TestRunner:
         "fusion": ["apply_rotary_pos_emb", "rwkv_ka_fusion", "rwkv_mm_sparsity"],
     }
 
-    # Operators excluded per backend (linalg.reduce with indices not supported on NPU)
+    # Operators excluded per backend
     BACKEND_EXCLUSIONS = {
         "NPU": ["max", "argmax"],
+    }
+
+    # Extra environment variables needed per backend
+    BACKEND_ENV = {
+        "GCU": {
+            "TORCH_GCU_ENABLE_INT64_AND_UINT64": "1",
+            "ENFLAME_PT_OP_DEBUG_CONFIG": "fallback_cpu=all_ops",
+        },
     }
 
     def __init__(self, build_dir: str, backend: str, timeout: int = 300):
@@ -84,6 +92,9 @@ class TestRunner:
             return result
 
         try:
+            env = os.environ.copy()
+            env.update(self.BACKEND_ENV.get(self.backend, {}))
+
             start_time = time.time()
             proc = subprocess.run(
                 [str(test_path)],
@@ -91,6 +102,7 @@ class TestRunner:
                 text=True,
                 timeout=self.timeout,
                 cwd=test_path.parent,
+                env=env,
             )
             end_time = time.time()
 
@@ -201,7 +213,7 @@ def main():
     parser = argparse.ArgumentParser(description="Run Triton JIT operator tests")
     parser.add_argument(
         "--backend",
-        choices=["CUDA", "MUSA", "NPU", "IX", "MLU"],
+        choices=["CUDA", "MUSA", "NPU", "IX", "MLU", "GCU"],
         default="CUDA",
         help="Backend to test",
     )
