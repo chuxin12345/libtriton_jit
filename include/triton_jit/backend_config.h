@@ -8,6 +8,8 @@
 #include "triton_jit/backends/maca_backend.h"
 #elif defined(BACKEND_IX)
 #include "triton_jit/backends/ix_backend.h"
+#elif defined(BACKEND_GCU)
+#include "triton_jit/backends/gcu_backend.h"
 #else
 #include "triton_jit/backends/cuda_backend.h"
 #endif
@@ -33,6 +35,10 @@ using DefaultBackend = CudaBackend;
 #elif defined(BACKEND_IX)
 /// Default backend for IX (Tianshu)
 using DefaultBackend = IxBackend;
+
+#elif defined(BACKEND_GCU)
+/// Default backend for GCU (Enflame)
+using DefaultBackend = GcuBackend;
 
 #else
 // Default to CUDA if no backend specified

@@ -16,6 +16,8 @@
 #include <musa.h>
 #elif defined(BACKEND_MACA)
 #include <mcr/mc_runtime.h>
+#elif defined(BACKEND_GCU)
+#include "tops_runtime_api.h"
 #else
 #include "cuda.h"
 #endif
@@ -164,6 +166,21 @@ inline void __checkMacaErrors(mcError_t code, const char* file, const int line) 
             line,
             error_string);
     throw std::runtime_error(error_string ? error_string : "Unknown MACA error");
+  }
+}
+#elif defined(BACKEND_GCU)
+#define checkGcuErrors(err) __checkGcuErrors(err, __FILE__, __LINE__)
+
+inline void __checkGcuErrors(topsError_t code, const char* file, const int line) {
+  if (code != topsSuccess) {
+    const char* error_string = topsGetErrorString(code);
+    fprintf(stderr,
+            "GCU TOPS API error = %04d from file <%s>, line %i. Detail: <%s>\n",
+            static_cast<int>(code),
+            file,
+            line,
+            error_string);
+    throw std::runtime_error(error_string ? error_string : "Unknown GCU error");
   }
 }
 #else
