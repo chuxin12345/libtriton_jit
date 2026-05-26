@@ -41,7 +41,7 @@ def axpy3_kernel(X, Y, Out, a, n, BLOCK_N: tl.constexpr):
     x = tl.load(X + offsets, mask=mask)
     o = x
     if a is not None:
-        o = o * a
+        o *= a
 
     if Y is not None:
         y = tl.load(Y + offsets, mask=mask)

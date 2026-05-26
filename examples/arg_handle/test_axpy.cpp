@@ -2,6 +2,7 @@
 #include "axpy_op.h"
 #include "torch/torch.h"
 #include "triton_jit/backend_config.h"
+
 static at::Device test_device() {
 #if defined(BACKEND_NPU)
   return at::Device("npu:0");
