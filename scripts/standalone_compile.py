@@ -345,18 +345,9 @@ def _compile_a_kernel(
         opts = mlu_backend.parse_options(opts)
         ccinfo = triton.compile(src, target=target, options=opts.__dict__)
     elif backend in ["GCU"]:
-        import triton_gcu.triton
-        from triton_gcu.triton.driver import _GCUDriver
-        from triton_gcu.triton.compiler import _GCUBackend
-        gcu_backends = importlib.import_module('triton.backends')
-        gcu_backends.backends['gcu'] = type('GcuBackendEntry', (), {
-            'compiler': _GCUBackend, 'driver': _GCUDriver
-        })
-        driver = _GCUDriver()
-        target = driver.get_current_target()
-        gcu_backend_inst = triton.compiler.make_backend(target)
-        opts = gcu_backend_inst.parse_options(opts)
-        ccinfo = triton.compile(src, target=target, options=opts.__dict__)
+        from triton.backends.enflame.driver import _GCUDriver
+        target = _GCUDriver().get_current_target()
+        ccinfo = triton.compile(src, target=target, options=opts)
     else:
         # CUDA / IX: use CUDA device context
         with torch.cuda.device(device_id):
