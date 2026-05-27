@@ -112,6 +112,8 @@ DEFINE_TRITON_TYPE(uint64_t, "u64");
 DEFINE_TRITON_TYPE(float, "fp32");
 DEFINE_TRITON_TYPE(double, "fp64");
 DEFINE_TRITON_TYPE(std::nullptr_t, "*i8");
+DEFINE_TRITON_TYPE(const char*, "constexpr");
+DEFINE_TRITON_TYPE(std::string, "constexpr");
 
 #undef DEFINE_TRITON_TYPE
 
