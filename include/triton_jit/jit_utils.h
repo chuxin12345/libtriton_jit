@@ -16,6 +16,7 @@
 #include <musa.h>
 #elif defined(BACKEND_MACA)
 #include <mcr/mc_runtime.h>
+#elif defined(BACKEND_GCU)
 #else
 #include "cuda.h"
 #endif
@@ -166,6 +167,8 @@ inline void __checkMacaErrors(mcError_t code, const char* file, const int line) 
     throw std::runtime_error(error_string ? error_string : "Unknown MACA error");
   }
 }
+#elif defined(BACKEND_GCU)
+// GCU error handling is done inline in gcu_backend.h
 #else
 void ensure_cuda_context();
 

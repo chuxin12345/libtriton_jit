@@ -128,7 +128,12 @@ struct ArgHandle {
     } else if (tp == c10::ScalarType::UInt64) {
       handle_arg_plain(*reinterpret_cast<const uint64_t*>(p));
     } else if (tp == c10::ScalarType::Double) {
+#if defined(BACKEND_GCU)
+      float f = static_cast<float>(*reinterpret_cast<const double*>(p));
+      handle_arg_plain(f);
+#else
       handle_arg_plain(*reinterpret_cast<const double*>(p));
+#endif
     } else {
       throw std::runtime_error("unsupported scalar type.");
     }
